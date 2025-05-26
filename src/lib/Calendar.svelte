@@ -6,11 +6,11 @@
 
   import { hexToRgb, luma } from '$lib/utils/colors.js'
   import { track } from '$lib/utils/track.js'
-  import { srcset } from '$lib/utils/srcset'
   import { resolve } from '$lib/prismic.js'
   import Button from '$lib/Button.svelte'
   import Framed from '$lib/Framed.svelte'
   import Symbol from '$lib/Symbol.svelte'
+  import { asImageWidthSrcSet } from '@prismicio/helpers'
 
   export let events = []
   export let compact = false
@@ -73,12 +73,12 @@
 
   function image(props) {
     if (!props.url) return null
-    const sources = srcset(props.url, [64, 96, 128, 192])
+    const sources = asImageWidthSrcSet(props, {widths: [64, 96, 128, 192]})
     return {
-      srcset: sources,
+      srcset: sources?.srcset,
       sizes: compact ? '4rem' : '(min-width: 600px) 6rem, 4rem',
       alt: props.alt || '',
-      src: sources.split(' ')[0],
+      src: sources?.src,
       ...props.dimensions
     }
   }

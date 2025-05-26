@@ -3,7 +3,6 @@
   import { page } from '$app/stores'
   import { onMount } from 'svelte'
 
-  import { srcset } from '$lib/utils/srcset.js'
   import GridCell from '$lib/GridCell.svelte'
   import RichText from '$lib/RichText.svelte'
   import { track } from '$lib/utils/track.js'
@@ -12,6 +11,7 @@
   import Html from '$lib/Html.svelte'
   import Card from '$lib/Card.svelte'
   import Scen from '../+page.svelte'
+  import { asImageWidthSrcSet } from '@prismicio/helpers'
 
   export let data
 
@@ -44,14 +44,12 @@
 
   function image(props) {
     if (!props.url) return null
-    const sources = srcset(props.url, [400, 600, [900, 'q_70']], {
-      aspect: 1
-    })
+    const sources = asImageWidthSrcSet(props, {widths: [400, 600, 900], ar: '1:1'})
     return {
-      srcset: sources,
+      srcset: sources?.srcset,
       sizes: '(min-width: 600px) 33vw, 100vw',
       alt: props.alt || '',
-      src: sources.split(' ')[0],
+      src: sources?.src,
       width: props.dimensions.width,
       height: props.dimensions.width
     }

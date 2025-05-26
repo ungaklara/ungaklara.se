@@ -1,15 +1,15 @@
 <script>
-  import { srcset } from '$lib/utils/srcset'
+  import { asImageWidthSrcSet } from '@prismicio/helpers'
   export let posts = []
 
   function image(props) {
     if (!props.url) return null
-    const sources = srcset(props.url, [150, 600, 900, 1200], { aspect: 1 })
+    const sources = asImageWidthSrcSet(props, {widths: [150, 600, 900, 1200], ar: '1:1'})
     return {
-      srcset: sources,
+      srcset: sources?.srcset,
       sizes: '30vw',
       alt: props.alt || '',
-      src: sources.split(' ')[0],
+      src: sources?.src,
       ...props.dimensions
     }
   }

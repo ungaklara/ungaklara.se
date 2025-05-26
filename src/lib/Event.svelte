@@ -1,10 +1,12 @@
 <script>
-  import { srcset } from './utils/srcset.js'
   import Button from './Button.svelte'
   import Framed from './Framed.svelte'
   import Html from './Html.svelte'
+  import { asImageWidthSrcSet } from '@prismicio/helpers'
 
   export let teaser = false
+  
+  /** @type {object?} */
   export let image = null
 
   /** @type {string?} */
@@ -14,13 +16,13 @@
   export let buttons = []
 
   let imageAttrs = null
-  $: if (image.url) {
-    const sources = srcset(image.url, [400, 600, [900, 'q_80']])
+  $: if (image?.url) {
+    const sources = asImageWidthSrcSet(image, {widths: [400, 600, 900]})
     imageAttrs = {
-      srcset: sources,
+      srcset: sources?.srcset,
       alt: image.alt || '',
       sizes: '(min-width: 600px) 25vw, 50vw',
-      src: sources.split(' ')[0],
+      src: sources?.src,
       ...image.dimensions
     }
   }

@@ -5,7 +5,6 @@
   import { intersection } from '$lib/utils/intersection.js'
   import SchoolBooking from '$lib/SchoolBooking.svelte'
   import Blockquote from '$lib/Blockquote.svelte'
-  import { srcset } from '$lib/utils/srcset.js'
   import Instagram from '$lib/Instagram.svelte'
   import RichText from '$lib/RichText.svelte'
   import GridCell from '$lib/GridCell.svelte'
@@ -24,6 +23,7 @@
   import Html from '$lib/Html.svelte'
   import Grid from '$lib/Grid.svelte'
   import Card from '$lib/Card.svelte'
+  import { asImageWidthSrcSet } from '@prismicio/helpers'
 
   export let data
   export let form
@@ -77,11 +77,14 @@
 
   function image(props) {
     if (!props?.url) return null
+
+    const sources = asImageWidthSrcSet(props, {widths: [200, 400, 600, 900, 1600], crop: ['focalpoint']});
+
     return {
-      srcset: srcset(props.url, [200, 400, 600, 900, [1600, 'q_80']]),
+      srcset: sources?.srcset,
       sizes: '(min-width: 600px) 50vw, 100vw',
       alt: props.alt || '',
-      src: srcset(props.url, [[900, 'c_thumb']]).split(' ')[0],
+      src: sources?.src,
       ...props.dimensions
     }
   }
@@ -107,15 +110,12 @@
         </Intro>
         {#if data.page.data.show_image && data.page.data.featured_image}
           {@const featured = data.page.data.featured_image}
+          {@const sources = asImageWidthSrcSet(featured, {widths: [200, 400, 800], ar: '278:195'})}
           {@const image = Object.assign(
             {
-              src: srcset(featured.url, [200], {
-                aspect: 278 / 195
-              }).split(' ')[0],
+              src: sources?.src,
               sizes: '15rem',
-              srcset: srcset(featured.url, [200, 400, [800, 'q_80']], {
-                aspect: 278 / 195
-              }),
+              srcset: sources?.srcset,
               alt: featured.alt || ''
             },
             featured.dimensions
@@ -248,20 +248,20 @@
 
         {#if slice.slice_type === 'image'}
           {#if slice.primary.image.url}
-            {@const sources = srcset(slice.primary.image.url, [
+            {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [
               600,
               900,
-              [1600, 'q_80'],
-              [3000, 'q_60']
-            ])}
+              1600,
+              3000
+            ]})}
             <figure>
               <Html
                 size="large"
                 class={slice.primary.smaller ? '' : 'u-sizeFull'}>
                 <img
                   sizes="100vw"
-                  srcset={sources}
-                  src={sources.split(' ')[0]}
+                  srcset={sources?.srcset}
+                  src={sources?.src}
                   alt={slice.primary.image.alt || ''}
                   {...slice.primary.image.dimensions} />
                 {#if slice.primary.image.copyright}
@@ -280,6 +280,14 @@
             {@const link = resolve(slice.primary.link)}
             {@const tag = slice.primary.tag}
             {@const desc = slice.primary.desc}
+            {@const sources = asImageWidthSrcSet(slice.primary.image, {
+              widths: [
+                600,
+                900,
+                1600,
+                3000,
+              ]
+            })}
             <Banner
               top={index === 0}
               {title}
@@ -288,14 +296,9 @@
               {desc}
               image={slice.primary.image.url
                 ? {
-                    src: srcset(slice.primary.image.url, [900]).split(' ')[0],
+                    src: sources?.src,
                     sizes: '90vw',
-                    srcset: srcset(slice.primary.image.url, [
-                      600,
-                      900,
-                      [1600, 'q_80'],
-                      [3000, 'q_60']
-                    ]),
+                    srcset: sources?.srcset,
                     ...slice.primary.image.dimensions
                   }
                 : null} />
@@ -323,22 +326,15 @@
         {/if}
 
         {#if slice.slice_type === 'author' || slice.slice_type === 'contact'}
+          {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [200, 400, 800], ar: '278:195'})}
           <Byline
             heading={asText(slice.primary.heading)}
             image={slice.primary.image.url
               ? Object.assign(
                   {
-                    src: srcset(slice.primary.image.url, [200], {
-                      aspect: 278 / 195
-                    }).split(' ')[0],
+                    src: sources?.src,
                     sizes: '15rem',
-                    srcset: srcset(
-                      slice.primary.image.url,
-                      [200, 400, [800, 'q_80']],
-                      {
-                        aspect: 278 / 195
-                      }
-                    ),
+                    srcset: sources?.srcset,
                     alt: slice.primary.image.alt || ''
                   },
                   slice.primary.image.dimensions
@@ -374,18 +370,17 @@
                   <article>
                     <Html>
                       {#if item.image.url}
-                        {@const sources = srcset(
-                          item.image.url,
-                          [200, 400, [800, 'q_80']],
-                          { aspect: 1.4 }
+                        {@const sources = asImageWidthSrcSet(
+                          item.image,
+                          {widths: [200, 400, 800], ar: '7:5'},
                         )}
                         <img
                           class="u-sizeFull"
                           sizes="13em"
-                          srcset={sources}
+                          srcset={sources?.srcset}
                           style="max-width: 13em !important; width: 100%"
                           alt={item.image.alt || ''}
-                          src={sources.split(' ')[0]}
+                          src={sources?.src}
                           {...item.image.dimensions} />
                       {/if}
                       <div class="u-nudgeMd">

@@ -3,7 +3,7 @@
 </script>
 
 <script>
-  import { asText } from '@prismicio/client'
+  import { asImageWidthSrcSet, asText } from '@prismicio/client'
   import { browser } from '$app/environment'
   import { parseJSON } from 'date-fns'
   import { page } from '$app/stores'
@@ -11,7 +11,6 @@
 
   import { intersection } from '$lib/utils/intersection.js'
   import Blockquote from '$lib/Blockquote.svelte'
-  import { srcset } from '$lib/utils/srcset.js'
   import FactsBox from '$lib/FactsBox.svelte'
   import RichText from '$lib/RichText.svelte'
   import GridCell from '$lib/GridCell.svelte'
@@ -30,6 +29,7 @@
   import Html from '$lib/Html.svelte'
   import Grid from '$lib/Grid.svelte'
   import Card from '$lib/Card.svelte'
+  import { asImageSrc } from '@prismicio/helpers'
 
   export let data
 
@@ -149,19 +149,22 @@
   }
 
   function heroImage(props) {
-    if (!props.url) return null
-    return {
-      alt: props.alt || '',
-      sizes: '100vw',
-      srcset: srcset(props.url, [
+    if (!props.url) return null;
+
+    const sources = asImageWidthSrcSet(props, {widths: [
         400,
         600,
         800,
         1200,
-        [1800, 'q_80'],
-        [2600, 'q_50']
-      ]),
-      src: srcset(props.url, [900]).split(' ')[0],
+        1800,
+        2600
+      ]});
+
+    return {
+      alt: props.alt || '',
+      sizes: '100vw',
+      srcset: sources?.srcset,
+      src: sources?.src,
       ...props.dimensions
     }
   }
@@ -169,12 +172,10 @@
   function resourceImage(props) {
     if (!props.url) return null
     return {
-      srcset: srcset(props.url, [200, 400, 600, 900, [1600, 'q_60,c_thumb']], {
-        transforms: 'c_thumb'
-      }),
+      srcset: asImageWidthSrcSet(props, {widths: [200, 400, 600, 900, 1600], q: 60})?.srcset,
       sizes: '(min-width: 600px) 50vw, 100vw',
       alt: props.alt || '',
-      src: srcset(props.url, [[900, 'c_thumb']]).split(' ')[0],
+      src: asImageSrc(props, {crop: ['focalpoint']}),
       ...props.dimensions
     }
   }
@@ -302,12 +303,12 @@
               <Grid carousel>
                 {#each images as slice}
                   {@const { dimensions, url, alt = '' } = slice.primary.image}
-                  {@const sources = srcset(url, [
+                  {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [
                     400,
                     599,
                     900,
-                    [1500, 'q_60']
-                  ])}
+                    1500
+                  ]})}
                   <GridCell>
                     <figure class="u-sizeFull">
                       <Html>
@@ -319,9 +320,9 @@
                           <img
                             {alt}
                             class="image"
-                            srcset={sources}
+                            srcset={sources?.srcset}
                             sizes="(min-width: 1000px) 33vw, (min-width: 600px) 50vw, 100vw"
-                            src={sources.split(' ')[0]}
+                            src={sources?.src}
                             {...dimensions} />
                         </div>
                         {#if slice.primary.caption}
@@ -363,17 +364,19 @@
                   <article class="u-sizeFull">
                     <Html>
                       {#if item.image.url}
-                        {@const sources = srcset(
-                          item.image.url,
-                          [200, 400, [800, 'q_80']],
-                          { aspect: 1.4 }
+                        {@const sources = asImageWidthSrcSet(
+                          item.image,
+                          {
+                            widths: [200, 400, 800],
+                            ar: '7:4',
+                          }
                         )}
                         <img
                           sizes="13em"
-                          srcset={sources}
+                          srcset={sources?.srcset}
                           style="max-width: 13em !important; width: 100%"
                           alt={item.image.alt || ''}
-                          src={sources.split(' ')[0]}
+                          src={sources?.src}
                           {...item.image.dimensions} />
                       {:else if hasImage}
                         <img
@@ -409,7 +412,7 @@
         }))}>
         {#if slice.slice_type === 'image'}
           {@const { dimensions, url, alt = '' } = slice.primary.image}
-          {@const sources = srcset(url, [400, 599, 900, [1500, 'q_60']])}
+          {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [400, 599, 900, 1500]})}
           <figure class="u-sizeFull">
             <Html>
               <div
@@ -420,9 +423,9 @@
                 <img
                   {alt}
                   class="image"
-                  srcset={sources}
+                  srcset={sources?.srcset}
                   sizes="(min-width: 1000px) 33vw, (min-width: 600px) 50vw, 100vw"
-                  src={sources.split(' ')[0]}
+                  src={sources?.src}
                   {...dimensions} />
               </div>
               {#if slice.primary.caption}
@@ -449,19 +452,15 @@
 
     {#if videos.length}
       {@const background = data.page.data.featured_background}
+      {@const sources = asImageWidthSrcSet(background, {widths: [400, 900, 1800, 2600]})}
       <div class="u-spaceLg">
         <Trailer
           background={background.url
             ? {
-                src: srcset(background.url, [900]).split(' ')[0],
+                src: sources?.src,
                 sizes:
                   '(min-width: 2000px) 100vw, (min-width: 1600px) 120vw, (min-width: 1400px) 110vw, (min-width: 1000px) 130vw, 150vw',
-                srcset: srcset(background.url, [
-                  400,
-                  900,
-                  [1800, 'q_70'],
-                  [2600, 'q_50']
-                ]),
+                srcset: sources?.srcset,
                 ...background.dimensions
               }
             : null}>
@@ -516,17 +515,16 @@
                 <div class="u-sizeFull">
                   <Html>
                     {#if item.image.url}
-                      {@const sources = srcset(
-                        item.image.url,
-                        [200, 400, [800, 'q_80']],
-                        { aspect: 1.4 }
+                      {@const sources = asImageWidthSrcSet(
+                        item.image,
+                        {widths: [200, 400, 800], ar: '7:5'},
                       )}
                       <img
                         sizes="13em"
-                        srcset={sources}
+                        srcset={sources?.srcset}
                         style="max-width: 13em"
                         alt={item.image.alt || ''}
-                        src={sources.split(' ')[0]}
+                        src={sources?.src}
                         width="200"
                         height={200 * 1.4} />
                     {:else if hasImage}
