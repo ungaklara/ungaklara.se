@@ -47,10 +47,10 @@
   export let size = null
 
   const dispatch = createEventDispatcher()
-
+  
   $: id = getId(content)
   $: provider = content?.provider_name.toLowerCase()
-
+  
   let isExpanded = false
   function onstart(event) {
     dispatch('start')

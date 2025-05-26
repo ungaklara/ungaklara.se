@@ -1,6 +1,6 @@
 <script>
   import { formatInTimeZone } from 'date-fns-tz'
-  import parseJSON from 'date-fns/parseJSON'
+  import parseJSON from 'date-fns/parseJSON/index.js'
   import { asText } from '@prismicio/client'
   import { onMount } from 'svelte'
 
