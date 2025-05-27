@@ -35,7 +35,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@beyonk/gdpr-cookie-consent-banner": "^12.1.0",
     "@sveltejs/vite-plugin-svelte": "^3.1.0"
+  },
+  "peerDependencies": {
+    "@beyonk/gdpr-cookie-consent-banner": "^16.0.1"
   }
 }

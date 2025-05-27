@@ -88,7 +88,7 @@
   {#each Object.entries(days) as [key, items], index (key)}
     {@const [year, month, day] = items.at(0).date.split('-')}
     {@const date = new Date(+year, +month - 1, +day)}
-    <li class="row" class:u-slideUp={!compact} style:--delay="{index * 100}ms">
+    <!-- <li class="row" class:u-slideUp={!compact} style:--delay="{index * 100}ms">
       <time datetime="{year}-{month}-{day}" class="day">
         {date.toLocaleString('sv', {
           weekday: 'long'
@@ -164,7 +164,7 @@
           </div>
         </div>
       {/each}
-    </li>
+    </li> -->
   {/each}
 </ol>
 

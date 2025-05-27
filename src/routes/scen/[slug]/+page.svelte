@@ -70,7 +70,7 @@
 
   onMount(measure)
 
-  console.log(data.production)
+  // console.log(data.production)
 
   /** @type {any[]} */
   $: actions = [
