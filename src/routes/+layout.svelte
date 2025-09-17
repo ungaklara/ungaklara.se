@@ -71,21 +71,22 @@
     <div class="main">
         <slot />
     </div>
-    <svelte:element this="a" id="bapluslogo" class="logo" onclick="if(typeof ReachDeck !== undefined) ReachDeck.panel.toggleBar();" href="#">
+    <!-- <svelte:element this="a" id="bapluslogo" class="logo" onclick="if(typeof ReachDeck !== undefined) ReachDeck.panel.toggleBar();" href="#">
         Aktivera Talande Webb
-    </svelte:element>
+    </svelte:element> -->
     <Footer {settings} />
-    <svelte:element this="script">
-        {@html `
-        (function() {
-            window.ybug_settings = ${JSON.stringify(YBUG_CONFIG)};
-            var ybug = document.createElement('script'); ybug.type = 'text/javascript'; ybug.async = true;
-            ybug.src = 'https://widget.ybug.io/button/'+window.ybug_settings.id+'.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ybug, s);
-        })();
-        `}
-    </svelte:element>
 </div>
+
+<svelte:element this="script">
+    {@html `
+    (function() {
+        window.ybug_settings = ${JSON.stringify(YBUG_CONFIG)};
+        var ybug = document.createElement('script'); ybug.type = 'text/javascript'; ybug.async = true;
+        ybug.src = 'https://widget.ybug.io/button/'+window.ybug_settings.id+'.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ybug, s);
+    })();
+    `}
+</svelte:element>
 
  <svelte:element this="script" type="text/javascript" src="https://www.browsealoud.com/plus/scripts/3.1.0/ba.js" crossorigin="anonymous" integrity="sha256-VCrJcQdV3IbbIVjmUyF7DnCqBbWD1BcZ/1sda2KWeFc= sha384-k2OQFn+wNFrKjU9HiaHAcHlEvLbfsVfvOnpmKBGWVBrpmGaIleDNHnnCJO4z2Y2H sha512-gxDfysgvGhVPSHDTieJ/8AlcIEjFbF3MdUgZZL2M5GXXDdIXCcX0CpH7Dh6jsHLOLOjRzTFdXASWZtxO+eMgyQ=="/>
 

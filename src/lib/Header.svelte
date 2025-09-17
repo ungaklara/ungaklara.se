@@ -16,6 +16,12 @@
     })
     event.preventDefault()
   }
+
+  // function initTalandeWebb() {
+  //   if (typeof window?.ReachDeck !== undefined) {
+  //     window?.ReachDeck?.panel?.toggleBar()
+  //   }
+  // }
 </script>
 
 <div class="wrap">
@@ -38,6 +44,16 @@
           <a class="link" href={resolve(item.link)}>{item.link_text}</a>
         </li>
       {/each}
+      <!-- <li class="u-inlineBlock">
+        <svelte:element
+          this="a"
+          id="bapluslogo"
+          class="link"
+          onclick="if(typeof window.ReachDeck !== undefined) window.ReachDeck.panel.toggleBar();"
+          href="#">
+          Talande Webb
+        </svelte:element>
+      </li> -->
       <li class="u-inlineBlock">
         <a class="link link--scroll" href="#menu" on:click={scrollDown}>
           Mer
