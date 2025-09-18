@@ -150,21 +150,6 @@
         Visa på karta
       </a>
     </div>
-    <!-- <div class="section">
-      <h3 class="title">Talande Webb</h3>
-      <p>
-        Den här webbplatsen använder tjänsten Talande Webb för uppläsning av
-        innehåll på webbplatsen.
-      </p>
-      <svelte:element
-        this="a"
-        id="bapluslogo"
-        class="underline"
-        onclick="if(typeof window.ReachDeck !== undefined) window.ReachDeck.panel.toggleBar();"
-        href="#">
-        Aktivera Talande Webb
-      </svelte:element>
-    </div> -->
   </div>
   <nav class="nav" id="menu">
     {#each settings.menu as section}

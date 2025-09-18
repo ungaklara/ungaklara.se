@@ -12,10 +12,13 @@
   export let data
 
   let vma = true
+  //   let isReachDeckLoaded = false
 
   $: settings = data.settings.data
 
   onMount(() => {
+    // isReachDeckLoaded = typeof window?.ReachDeck !== 'undefined'
+
     navigator.serviceWorker.getRegistrations().then((workers) => {
       for (const worker of workers) {
         // Unregister any lingering service workers from old app versions
@@ -47,6 +50,17 @@
 </svelte:head>
 
 <CookieBanner />
+
+<div class="top-banner" aria-label="ReachDeck togglebar">
+  <svelte:element
+    this="a"
+    id="bapluslogo"
+    class="logo"
+    onclick="if(typeof window.ReachDeck !== 'undefined') window.ReachDeck.panel.toggleBar();"
+    href="#">
+    Aktivera Talande Webb
+  </svelte:element>
+</div>
 
 <div class="layout">
   <div class="gradient" />
@@ -92,6 +106,37 @@
 
 <style>
   @import '$lib/index.css';
+
+  .top-banner {
+    height: 40px;
+    display: block;
+    padding-inline: 1rem;
+    background-color: #000;
+    color: #fff;
+    display: none;
+  }
+
+  .top-banner a#bapluslogo {
+    display: flex;
+    place-items: center;
+    place-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .top-banner a#bapluslogo:hover,
+  .top-banner a#bapluslogo:focus-visible {
+    text-decoration: underline;
+  }
+
+  body:has(#th_toolbar) .top-banner {
+    display: none;
+  }
+
+  #th_toolbar {
+    --toolbarBackgroundColor: #000;
+    --toolbarButtonBackgroundColor: #000;
+  }
 
   .layout {
     display: flex;
