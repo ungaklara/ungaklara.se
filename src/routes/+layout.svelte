@@ -129,11 +129,11 @@
     text-decoration: underline;
   }
 
-  :global(body:has(#th_toolbar) .top-banner) {
+  :global(body:has(#th_toolbar)) .top-banner {
     display: none;
   }
 
-  :global(#th_toolbar) {
+  :global(.th-rd#th_toolbar) {
     --toolbarBackgroundColor: #000;
     --toolbarButtonBackgroundColor: #000;
   }
