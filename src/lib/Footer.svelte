@@ -150,7 +150,7 @@
         Visa på karta
       </a>
     </div>
-    <div class="section">
+    <!-- <div class="section">
       <h3 class="title">Talande Webb</h3>
       <p>
         Den här webbplatsen använder tjänsten Talande Webb för uppläsning av
@@ -164,7 +164,7 @@
         href="#">
         Aktivera Talande Webb
       </svelte:element>
-    </div>
+    </div> -->
   </div>
   <nav class="nav" id="menu">
     {#each settings.menu as section}
