@@ -59,12 +59,15 @@
     ) {
       mutations_list.forEach(function (mutation) {
         mutation.addedNodes.forEach(function (added_node) {
-          console.log(added_node)
+          console.log(added_node?.id, added_node?.getAttribute('id'))
 
           if (added_node?.id === '__bs_entryDiv') {
             reachDeckContainerElement = added_node
 
             isReachdeckLoaded = true
+            isReachdeckVisible = !added_node
+              ?.getAttribute('style')
+              .includes('none')
 
             reachdeckAttributeObserver.observe(reachDeckContainerElement, {
               attributes: true //configure it to listen to attribute changes
