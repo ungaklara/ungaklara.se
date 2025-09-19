@@ -20,29 +20,28 @@
   $: isReachdeckVisible = false
   $: settings = data.settings.data
 
-  // function checkReachdeckLoaded() {
-  //   const reachdeckWasLoaded = typeof window?.ReachDeck !== 'undefined'
+  function checkReachdeckLoaded() {
+    const reachdeckWasLoaded = typeof window?.ReachDeck !== 'undefined'
 
-  //   if (reachdeckTimout <= 0 || reachdeckWasLoaded) {
-  //     clearTimeout(reachdeckTimer)
+    if (reachdeckTimout <= 0 || reachdeckWasLoaded) {
+      clearTimeout(reachdeckTimer)
 
-  //     return
-  //   }
+      return
+    }
 
-  //   if (reachdeckWasLoaded) {
-  //     isReachdeckLoaded = true
-  //   }
+    if (reachdeckWasLoaded) {
+      isReachdeckLoaded = true
+    }
 
-  //   reachdeckTimout -= 100
-  //   // console.log('checkReachdeckLoaded', reachdeckTimout, reachdeckWasLoaded)
+    reachdeckTimout -= 100
 
-  //   reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
-  // }
+    reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
+  }
 
   onMount(() => {
     const layoutElement = document.querySelector('body')
 
-    // reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
+    reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
 
     const reachdeckAttributeObserver = new MutationObserver(function (
       mutations
@@ -64,7 +63,6 @@
           if (added_node?.id === '__bs_entryDiv') {
             reachDeckContainerElement = added_node
 
-            isReachdeckLoaded = true
             isReachdeckVisible = !added_node
               ?.getAttribute('style')
               .includes('none')
