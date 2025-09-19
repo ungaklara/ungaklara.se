@@ -12,12 +12,33 @@
   export let data
 
   let vma = true
-  //   let isReachDeckLoaded = false
+  let isReachdeckLoaded = false
+  let reachdeckTimer = null
+  let reachdeckTimout = 3000
 
   $: settings = data.settings.data
 
+  function checkReachdeckLoaded() {
+    const reachdeckWasLoaded = typeof window?.ReachDeck !== 'undefined'
+
+    if (reachdeckTimout <= 0 || reachdeckWasLoaded) {
+      clearTimeout(reachdeckTimer)
+
+      return
+    }
+
+    if (reachdeckWasLoaded) {
+      isReachdeckLoaded = true
+    }
+
+    reachdeckTimout -= 100
+    console.log('checkReachdeckLoaded', reachdeckTimout, reachdeckWasLoaded)
+
+    reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
+  }
+
   onMount(() => {
-    // isReachDeckLoaded = typeof window?.ReachDeck !== 'undefined'
+    reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
 
     navigator.serviceWorker.getRegistrations().then((workers) => {
       for (const worker of workers) {
@@ -51,7 +72,10 @@
 
 <CookieBanner />
 
-<div class="top-banner" aria-label="ReachDeck togglebar">
+<div
+  class="top-banner"
+  aria-label="ReachDeck togglebar"
+  data-reachdeck-loaded={isReachdeckLoaded}>
   <svelte:element
     this="a"
     id="bapluslogo"
@@ -129,14 +153,14 @@
     text-decoration: underline;
   }
 
-  :global(body:has(#th_toolbar)) .top-banner {
+  /* :global(body:has(#th_toolbar)) .top-banner {
     display: none;
-  }
+  } */
 
-  :global(.th-rd#th_toolbar) {
+  /* :global(.th-rd#th_toolbar) {
     --toolbarBackgroundColor: #000;
     --toolbarButtonBackgroundColor: #000;
-  }
+  } */
 
   .layout {
     display: flex;
