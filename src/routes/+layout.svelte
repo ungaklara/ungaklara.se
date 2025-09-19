@@ -49,8 +49,7 @@
     ) {
       mutations.forEach(function ({ type, attributeName, target }) {
         if (type === 'attributes' && attributeName === 'style') {
-          isReachdeckVisible = target?.getAttribute('style').includes('none')
-          console.log('isReachdeckVisible', isReachdeckVisible, target)
+          isReachdeckVisible = !target?.getAttribute('style').includes('none')
         }
       })
     })
@@ -62,8 +61,6 @@
         mutation.addedNodes.forEach(function (added_node) {
           if (added_node?.id === '__bs_entryDiv') {
             reachDeckContainerElement = added_node
-
-            console.log(reachDeckContainerElement)
 
             reachdeckAttributeObserver.observe(reachDeckContainerElement, {
               attributes: true //configure it to listen to attribute changes
@@ -117,7 +114,8 @@
 <div
   class="top-banner"
   aria-label="ReachDeck togglebar"
-  data-reachdeck-loaded={isReachdeckLoaded}>
+  data-reachdeck-loaded={isReachdeckLoaded}
+  data-reachdeck-visible={isReachdeckVisible}>
   <svelte:element
     this="a"
     id="bapluslogo"
