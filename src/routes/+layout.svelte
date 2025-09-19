@@ -20,54 +20,56 @@
   $: isReachdeckVisible = false
   $: settings = data.settings.data
 
-  function checkReachdeckLoaded() {
-    const reachdeckWasLoaded = typeof window?.ReachDeck !== 'undefined'
+  // function checkReachdeckLoaded() {
+  //   const reachdeckWasLoaded = typeof window?.ReachDeck !== 'undefined'
 
-    if (reachdeckTimout <= 0 || reachdeckWasLoaded) {
-      clearTimeout(reachdeckTimer)
+  //   if (reachdeckTimout <= 0 || reachdeckWasLoaded) {
+  //     clearTimeout(reachdeckTimer)
 
-      return
-    }
+  //     return
+  //   }
 
-    if (reachdeckWasLoaded) {
-      isReachdeckLoaded = true
-    }
+  //   if (reachdeckWasLoaded) {
+  //     isReachdeckLoaded = true
+  //   }
 
-    reachdeckTimout -= 100
-    // console.log('checkReachdeckLoaded', reachdeckTimout, reachdeckWasLoaded)
+  //   reachdeckTimout -= 100
+  //   // console.log('checkReachdeckLoaded', reachdeckTimout, reachdeckWasLoaded)
 
-    reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
-  }
+  //   reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
+  // }
 
   onMount(() => {
     const layoutElement = document.querySelector('body > div')
 
-    reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
+    // reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
 
-    const reachdeckAttributeObserver = new MutationObserver(function (
-      mutations
-    ) {
-      mutations.forEach(function ({ type, attributeName, target }) {
-        if (type === 'attributes' && attributeName === 'style') {
-          isReachdeckVisible = !target?.getAttribute('style').includes('none')
-        }
-      })
-    })
+    // const reachdeckAttributeObserver = new MutationObserver(function (
+    //   mutations
+    // ) {
+    //   mutations.forEach(function ({ type, attributeName, target }) {
+    //     if (type === 'attributes' && attributeName === 'style') {
+    //       isReachdeckVisible = !target?.getAttribute('style').includes('none')
+    //     }
+    //   })
+    // })
 
     const reachdeckInjectedObserver = new MutationObserver(function (
       mutations_list
     ) {
       mutations_list.forEach(function (mutation) {
         mutation.addedNodes.forEach(function (added_node) {
-          if (added_node?.id === '__bs_entryDiv') {
-            reachDeckContainerElement = added_node
+          console.log(added_node)
 
-            reachdeckAttributeObserver.observe(reachDeckContainerElement, {
-              attributes: true //configure it to listen to attribute changes
-            })
+          // if (added_node?.id === '__bs_entryDiv') {
+          //   reachDeckContainerElement = added_node
 
-            reachdeckInjectedObserver.disconnect()
-          }
+          //   reachdeckAttributeObserver.observe(reachDeckContainerElement, {
+          //     attributes: true //configure it to listen to attribute changes
+          //   })
+
+          //   reachdeckInjectedObserver.disconnect()
+          // }
         })
       })
     })
