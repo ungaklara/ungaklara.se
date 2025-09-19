@@ -21,6 +21,8 @@
   $: settings = data.settings.data
 
   function checkReachdeckLoaded() {
+    console.log(typeof window?.ReachDeck)
+
     const reachdeckWasLoaded = typeof window?.ReachDeck !== 'undefined'
 
     if (reachdeckTimout <= 0 || reachdeckWasLoaded) {
