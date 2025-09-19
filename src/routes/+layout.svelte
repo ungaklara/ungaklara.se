@@ -63,6 +63,8 @@
           if (added_node?.id === '__bs_entryDiv') {
             reachDeckContainerElement = added_node
 
+            console.log(reachDeckContainerElement)
+
             reachdeckAttributeObserver.observe(reachDeckContainerElement, {
               attributes: true //configure it to listen to attribute changes
             })
