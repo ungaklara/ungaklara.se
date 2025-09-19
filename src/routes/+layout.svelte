@@ -182,11 +182,10 @@
 
   .top-banner {
     height: 40px;
-    display: block;
+    display: none;
     padding-inline: 1rem;
     background-color: #000;
     color: #fff;
-    display: none;
   }
 
   .top-banner a#bapluslogo {
@@ -202,14 +201,11 @@
     text-decoration: underline;
   }
 
-  /* :global(body:has(#th_toolbar)) .top-banner {
-    display: none;
-  } */
-
-  /* :global(.th-rd#th_toolbar) {
-    --toolbarBackgroundColor: #000;
-    --toolbarButtonBackgroundColor: #000;
-  } */
+  .top-banner:not(
+      [data-reachdeck-visible='true']
+    )[data-reachdeck-loaded='true'] {
+    display: block;
+  }
 
   .layout {
     display: flex;
