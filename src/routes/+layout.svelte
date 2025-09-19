@@ -40,19 +40,19 @@
   // }
 
   onMount(() => {
-    const layoutElement = document.querySelector('body > div')
+    const layoutElement = document.querySelector('body')
 
     // reachdeckTimer = setTimeout(checkReachdeckLoaded, 100)
 
-    // const reachdeckAttributeObserver = new MutationObserver(function (
-    //   mutations
-    // ) {
-    //   mutations.forEach(function ({ type, attributeName, target }) {
-    //     if (type === 'attributes' && attributeName === 'style') {
-    //       isReachdeckVisible = !target?.getAttribute('style').includes('none')
-    //     }
-    //   })
-    // })
+    const reachdeckAttributeObserver = new MutationObserver(function (
+      mutations
+    ) {
+      mutations.forEach(function ({ type, attributeName, target }) {
+        if (type === 'attributes' && attributeName === 'style') {
+          isReachdeckVisible = !target?.getAttribute('style').includes('none')
+        }
+      })
+    })
 
     const reachdeckInjectedObserver = new MutationObserver(function (
       mutations_list
@@ -61,15 +61,17 @@
         mutation.addedNodes.forEach(function (added_node) {
           console.log(added_node)
 
-          // if (added_node?.id === '__bs_entryDiv') {
-          //   reachDeckContainerElement = added_node
+          if (added_node?.id === '__bs_entryDiv') {
+            reachDeckContainerElement = added_node
 
-          //   reachdeckAttributeObserver.observe(reachDeckContainerElement, {
-          //     attributes: true //configure it to listen to attribute changes
-          //   })
+            isReachdeckLoaded = true
 
-          //   reachdeckInjectedObserver.disconnect()
-          // }
+            reachdeckAttributeObserver.observe(reachDeckContainerElement, {
+              attributes: true //configure it to listen to attribute changes
+            })
+
+            reachdeckInjectedObserver.disconnect()
+          }
         })
       })
     })
