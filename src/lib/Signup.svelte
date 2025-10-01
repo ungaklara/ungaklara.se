@@ -68,7 +68,10 @@
   {:else}
     <div class="form">
       <div class="progress">
-        <h4 class="header">Bli medlem i Unga Klaras Vänner</h4>
+        <h4 class="header">
+          Bli medlem i <span translate="no">Unga Klaras</span>
+           Vänner
+        </h4>
         <div class="section" class:current={step === 1}>
           <button
             class="header"

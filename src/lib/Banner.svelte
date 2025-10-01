@@ -121,6 +121,15 @@
       transform: rotate(180deg);
       display: block;
     }
+
+    body.-graphic-banner .banner .body::before,
+    body.-graphic-banner .banner .body::after {
+      display: none;
+    }
+
+    :global(body.-graphic-banner) .banner .body {
+      color: var(--color);
+    }
   }
 
   .body :global(p) {

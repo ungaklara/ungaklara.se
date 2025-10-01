@@ -27,7 +27,7 @@
 <div class="wrap">
   <header class="header u-container" class:override>
     <h2 class="u-hiddenVisually">Navigation</h2>
-    <a class="logo" href="/" rel="home">
+    <a class="logo" href="/" rel="home" translate="no">
       <i>U</i>
       <i>n</i>
       <i>g</i>
@@ -90,6 +90,13 @@
       --hover-background: #fff;
       --hover-color: #000;
       color: #fff;
+    }
+
+    :global(body.-graphic-banner) .header.override,
+    :global(body.-graphic-banner) .banner .body {
+      --hover-background: #000;
+      --hover-color: #fff;
+      color: #000;
     }
 
     .wrap:has(.header.override) {

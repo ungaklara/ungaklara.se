@@ -50,7 +50,10 @@
   <div class="main">
     <div class="newsletter">
       <Html>
-        <h2>Håll koll på Unga Klara!</h2>
+        <h2>
+          Håll koll på <span translate="no">Unga Klara</span>
+          !
+        </h2>
         <p>
           Va först med att veta om våra nya pjäser, senaste biljettsläppen och
           vad som händer på teatern.
@@ -172,7 +175,7 @@
     {/each}
   </nav>
   <aside>
-    <a class="logo" href="/">Unga Klara</a>
+    <a class="logo" href="/" translate="no">Unga Klara</a>
     <ul class="social">
       {#each settings.platforms as item}
         <li class="item">

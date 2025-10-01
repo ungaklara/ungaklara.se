@@ -149,16 +149,11 @@
   }
 
   function heroImage(props) {
-    if (!props.url) return null;
+    if (!props.url) return null
 
-    const sources = asImageWidthSrcSet(props, {widths: [
-        400,
-        600,
-        800,
-        1200,
-        1800,
-        2600
-      ]});
+    const sources = asImageWidthSrcSet(props, {
+      widths: [400, 600, 800, 1200, 1800, 2600]
+    })
 
     return {
       alt: props.alt || '',
@@ -172,10 +167,13 @@
   function resourceImage(props) {
     if (!props.url) return null
     return {
-      srcset: asImageWidthSrcSet(props, {widths: [200, 400, 600, 900, 1600], q: 60})?.srcset,
+      srcset: asImageWidthSrcSet(props, {
+        widths: [200, 400, 600, 900, 1600],
+        q: 60
+      })?.srcset,
       sizes: '(min-width: 600px) 50vw, 100vw',
       alt: props.alt || '',
-      src: asImageSrc(props, {crop: ['focalpoint']}),
+      src: asImageSrc(props, { crop: ['focalpoint'] }),
       ...props.dimensions
     }
   }
@@ -303,12 +301,9 @@
               <Grid carousel>
                 {#each images as slice}
                   {@const { dimensions, url, alt = '' } = slice.primary.image}
-                  {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [
-                    400,
-                    599,
-                    900,
-                    1500
-                  ]})}
+                  {@const sources = asImageWidthSrcSet(slice.primary.image, {
+                    widths: [400, 599, 900, 1500]
+                  })}
                   <GridCell>
                     <figure class="u-sizeFull">
                       <Html>
@@ -364,13 +359,10 @@
                   <article class="u-sizeFull">
                     <Html>
                       {#if item.image.url}
-                        {@const sources = asImageWidthSrcSet(
-                          item.image,
-                          {
-                            widths: [200, 400, 800],
-                            ar: '7:4',
-                          }
-                        )}
+                        {@const sources = asImageWidthSrcSet(item.image, {
+                          widths: [200, 400, 800],
+                          ar: '7:4'
+                        })}
                         <img
                           sizes="13em"
                           srcset={sources?.srcset}
@@ -412,7 +404,9 @@
         }))}>
         {#if slice.slice_type === 'image'}
           {@const { dimensions, url, alt = '' } = slice.primary.image}
-          {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [400, 599, 900, 1500]})}
+          {@const sources = asImageWidthSrcSet(slice.primary.image, {
+            widths: [400, 599, 900, 1500]
+          })}
           <figure class="u-sizeFull">
             <Html>
               <div
@@ -452,7 +446,9 @@
 
     {#if videos.length}
       {@const background = data.page.data.featured_background}
-      {@const sources = asImageWidthSrcSet(background, {widths: [400, 900, 1800, 2600]})}
+      {@const sources = asImageWidthSrcSet(background, {
+        widths: [400, 900, 1800, 2600]
+      })}
       <div class="u-spaceLg">
         <Trailer
           background={background.url
@@ -515,10 +511,10 @@
                 <div class="u-sizeFull">
                   <Html>
                     {#if item.image.url}
-                      {@const sources = asImageWidthSrcSet(
-                        item.image,
-                        {widths: [200, 400, 800], ar: '7:5'},
-                      )}
+                      {@const sources = asImageWidthSrcSet(item.image, {
+                        widths: [200, 400, 800],
+                        ar: '7:5'
+                      })}
                       <img
                         sizes="13em"
                         srcset={sources?.srcset}
@@ -601,13 +597,14 @@
           <h2>Är du pedagog?</h2>
           <RichText content={resources.primary.description}>
             <p>
-              Det pedagogiska materialet har tagits fram av Unga Klaras
-              pedagoger och är till för er som har sett eller ska se
-              föreställningen med er grupp och vill arbeta vidare kring delar av
-              pjäsens tematik tillsammans. <a
-                href="/pedagog/pedagogiskt-material">
-                Läs mer
-              </a>
+              Det pedagogiska materialet har tagits fram av <span
+                translate="no">
+                Unga Klaras
+              </span>
+              pedagoger och är till för er som har sett eller ska se föreställningen
+              med er grupp och vill arbeta vidare kring delar av pjäsens tematik
+              tillsammans.
+              <a href="/pedagog/pedagogiskt-material">Läs mer</a>
               .
             </p>
           </RichText>
