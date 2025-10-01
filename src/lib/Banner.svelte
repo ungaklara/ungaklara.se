@@ -11,7 +11,7 @@
 
 <div class="banner" class:top>
   <div class="main">
-    <img alt="" {...image} class="image" />
+    <img alt="" {...image || {}} class="image" />
     {#if title || desc || tag}
       <div class="body u-paddedBox">
         {#if tag}
@@ -122,12 +122,12 @@
       display: block;
     }
 
-    body.-graphic-banner .banner .body::before,
-    body.-graphic-banner .banner .body::after {
+    body.-graphic-banner .banner.top .body::before,
+    body.-graphic-banner .banner.top .body::after {
       display: none;
     }
 
-    :global(body.-graphic-banner) .banner .body {
+    :global(body.-graphic-banner) .banner.top .body {
       color: var(--color);
     }
   }
