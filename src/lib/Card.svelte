@@ -83,7 +83,7 @@
       </div>
 
       {#if link}
-        {@const linkUrl = filetype ? getDownloadLink(link.href) : null}
+        {@const linkUrl = filetype ? getDownloadLink(link.href) : link.href}
         {@const filename = filetype ? linkUrl.split('/').pop() : null}
         <div class="footer">
           <a
