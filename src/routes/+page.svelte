@@ -302,7 +302,6 @@
                     ...slice.primary.image.dimensions
                   }
                 : null} />
-            <pre>{JSON.stringify(sources?.src)}</pre>
           {/if}
         {/if}
 
