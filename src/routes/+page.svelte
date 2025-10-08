@@ -24,6 +24,7 @@
   import Grid from '$lib/Grid.svelte'
   import Card from '$lib/Card.svelte'
   import { asImageWidthSrcSet } from '@prismicio/helpers'
+  import { json } from '@sveltejs/kit'
 
   export let data
   export let form
@@ -78,7 +79,10 @@
   function image(props) {
     if (!props?.url) return null
 
-    const sources = asImageWidthSrcSet(props, {widths: [200, 400, 600, 900, 1600], crop: ['focalpoint']});
+    const sources = asImageWidthSrcSet(props, {
+      widths: [200, 400, 600, 900, 1600],
+      crop: ['focalpoint']
+    })
 
     return {
       srcset: sources?.srcset,
@@ -110,7 +114,10 @@
         </Intro>
         {#if data.page.data.show_image && data.page.data.featured_image}
           {@const featured = data.page.data.featured_image}
-          {@const sources = asImageWidthSrcSet(featured, {widths: [200, 400, 800], ar: '278:195'})}
+          {@const sources = asImageWidthSrcSet(featured, {
+            widths: [200, 400, 800],
+            ar: '278:195'
+          })}
           {@const image = Object.assign(
             {
               src: sources?.src,
@@ -248,12 +255,9 @@
 
         {#if slice.slice_type === 'image'}
           {#if slice.primary.image.url}
-            {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [
-              600,
-              900,
-              1600,
-              3000
-            ]})}
+            {@const sources = asImageWidthSrcSet(slice.primary.image, {
+              widths: [600, 900, 1600, 3000]
+            })}
             <figure>
               <Html
                 size="large"
@@ -281,12 +285,8 @@
             {@const tag = slice.primary.tag}
             {@const desc = slice.primary.desc}
             {@const sources = asImageWidthSrcSet(slice.primary.image, {
-              widths: [
-                600,
-                900,
-                1600,
-                3000,
-              ]
+              widths: [600, 900, 1600, 3000],
+              auto: 'compress'
             })}
             <Banner
               top={index === 0}
@@ -302,6 +302,7 @@
                     ...slice.primary.image.dimensions
                   }
                 : null} />
+            <pre>{JSON.stringify(sources?.src)}</pre>
           {/if}
         {/if}
 
@@ -326,7 +327,10 @@
         {/if}
 
         {#if slice.slice_type === 'author' || slice.slice_type === 'contact'}
-          {@const sources = asImageWidthSrcSet(slice.primary.image, {widths: [200, 400, 800], ar: '278:195'})}
+          {@const sources = asImageWidthSrcSet(slice.primary.image, {
+            widths: [200, 400, 800],
+            ar: '278:195'
+          })}
           <Byline
             heading={asText(slice.primary.heading)}
             image={slice.primary.image.url
@@ -370,10 +374,10 @@
                   <article>
                     <Html>
                       {#if item.image.url}
-                        {@const sources = asImageWidthSrcSet(
-                          item.image,
-                          {widths: [200, 400, 800], ar: '7:5'},
-                        )}
+                        {@const sources = asImageWidthSrcSet(item.image, {
+                          widths: [200, 400, 800],
+                          ar: '7:5'
+                        })}
                         <img
                           class="u-sizeFull"
                           sizes="13em"
@@ -495,6 +499,7 @@
               <div class:u-spaceMd={text}>
                 <Calendar compact {events} limit={6} />
               </div>
+              <a class="more-dates" href="/scen/kalendarium">Fler speldatum</a>
             </div>
           {/if}
         {/if}
@@ -555,6 +560,21 @@
     .slice-pjas_hypebild_ {
       margin-left: calc(var(--document-margin) * -1);
       margin-right: calc(var(--document-margin) * -1);
+    }
+  }
+
+  .more-dates {
+    display: none;
+  }
+
+  @media (max-width: 699px) {
+    .more-dates {
+      display: inline-block;
+      margin-top: 2rem;
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+      text-decoration-thickness: var(--border-width);
+      font-weight: 700;
     }
   }
 

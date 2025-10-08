@@ -25,7 +25,14 @@
   export let link = null
 
   $: internal = link?.href?.match(/^\/[^/]/)
-  $: filetype = link?.href?.match(/\.(\w+)(?:\?|$)/)
+  $: filetype = link?.href?.match(/\.(\w+)(?:\?|$)/)?.pop()
+
+  const getDownloadLink = (url) => {
+    const urlObject = new URL(url)
+    urlObject.search = ''
+
+    return urlObject.toString()
+  }
 </script>
 
 <article
@@ -76,13 +83,14 @@
       </div>
 
       {#if link}
-        {@const filename = filetype ? link.href.split('/').pop() : null}
+        {@const linkUrl = filetype ? getDownloadLink(link.href) : null}
+        {@const filename = filetype ? linkUrl.split('/').pop() : null}
         <div class="footer">
           <a
             on:click
             class="link"
             class:simle={filetype}
-            href={link.href}
+            href={linkUrl}
             download={filename}
             target={internal ? null : '_blank'}
             rel={internal ? null : 'noopener noreferrer'}>

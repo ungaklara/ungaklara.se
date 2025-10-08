@@ -127,6 +127,10 @@
       display: none;
     }
 
+    :global(body.-graphic-banner) .banner.top {
+      background: transparent;
+    }
+
     :global(body.-graphic-banner) .banner.top .body {
       color: var(--color);
     }
