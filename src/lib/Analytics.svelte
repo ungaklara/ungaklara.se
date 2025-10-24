@@ -1,27 +1,28 @@
 <script>
-    import { dev } from '$app/environment';
-    import { GOOGLE_ANALYTICS_ID } from './utils/constants';
+  import { dev } from '$app/environment'
+  import { GOOGLE_TAG_MANAGER_ID } from './utils/constants'
 
-    export let doTrack;
+  // export let doTrack
 </script>
 
-{#if doTrack()}
-    <svelte:element
-        this="script"
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`} />
+<svelte:element
+  this="script"
+  async
+  src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_TAG_MANAGER_ID}`} />
 
-    <svelte:element this="script">
-        {@html `
-        // Google Analytics Code
-        window.dataLayer = window.dataLayer || []
-        function gtag() {
-            dataLayer.push(arguments)
-        }
-        gtag('js', new Date())
-        gtag('config', ${GOOGLE_ANALYTICS_ID}${dev ? ', {debug_mode: true}' : ''})
-        `}
-    </svelte:element>
+<svelte:element this="script">
+  {@html `
+    // Google Analytics Code
+    window.dataLayer = window.dataLayer || []
+    function gtag() {
+        dataLayer.push(arguments)
+    }
+    gtag('js', new Date())
+    gtag('config', '${GOOGLE_TAG_MANAGER_ID}${dev ? ', {debug_mode: true}' : ''}')
+  `}
+</svelte:element>
+
+<!-- {#if doTrack()}
 
     <svelte:element this="script">
         {@html `
@@ -62,4 +63,4 @@
         }(window, document, 'ttq');
         `}
     </svelte:element>
-{/if}
+{/if} -->

@@ -1,77 +1,112 @@
 <script>
-    import '@beyonk/gdpr-cookie-consent-banner/banner.css';
-    import GdprBanner from '@beyonk/gdpr-cookie-consent-banner';
-    import Analytics from '$lib/Analytics.svelte';
+  import '@beyonk/gdpr-cookie-consent-banner/banner.css'
+  import GdprBanner from '@beyonk/gdpr-cookie-consent-banner'
+  import { dev } from '$app/environment'
+  import { GOOGLE_TAG_MANAGER_ID } from './utils/constants'
 
-    let consents = {necessary: false};
+  let consents = { necessary: false }
 
-    $: hasConsent = () => !!consents?.analytics;
-    $: showCookieBanner = () => !consents?.necessary;
-    
-    $: if (typeof localStorage !== 'undefined') {
-        consents = JSON.parse(localStorage.getItem('consents') || JSON.stringify(consents));
-    }
-
-    let gdprProps = {
-        cookieName: 'ungaklara',
-        cookieConfig: {
-            domain: 'ungaklara.se',
-            path: '/',
-        },
-        heading: 'Snabb fråga om cookies',
+  let gdprProps = {
+    cookieName: 'ungaklara',
+    cookieConfig: {
+      domain: dev ? 'localhost' : 'ungaklara.se',
+      path: '/'
+    },
+    heading: 'Snabb fråga om cookies',
+    description:
+      'De används för att förbättra hemsidan och för att samla besöksstatistik.',
+    acceptLabel: 'Godkänn',
+    acceptAllLabel: 'Godkänn alla',
+    acceptSelectedLabel: 'Godkänn valda',
+    rejectLabel: 'Endast nödvändiga',
+    settingsLabel: 'Välj vilka',
+    closeLabel: 'Stäng',
+    editLabel: 'Ändra inställningar',
+    choices: {
+      necessary: {
+        label: 'Nödvändiga kakor',
         description:
-            'De används för att förbättra hemsidan och för att samla besöksstatistik.',
-        acceptLabel: 'Godkänn',
-        acceptAllLabel: 'Godkänn alla',
-        acceptSelectedLabel: 'Godkänn valda',
-        rejectLabel: 'Endast nödvändiga',
-        settingsLabel: 'Välj vilka',
-        closeLabel: 'Stäng',
-        editLabel: 'Ändra inställningar',
-        choices: {
-            necessary: {
-                label: 'Nödvändiga kakor',
-                description:
-                    'Används för att vi inte ska fråga dig om cookie-inställningar igen.',
-                value: true,
-            },
-            // tracking: false,
-            tracking: {
-                label: 'Cookies för profilering',
-                description: 'Används för att följa .',
-                value: true,
-            },
-            analytics: {
-                label: 'Cookies för trafikanalys',
-                description:
-                    'Används för att hantera Google Analytics, en tjänst från Google.',
-                value: consents?.analytics ?? true,
-            },
-            // marketing: false
-        },
-        showEditIcon: false,
-    };
+          'Används för att vi inte ska fråga dig om cookie-inställningar igen.',
+        value: true
+      },
+      analytics: {
+        label: 'Cookies för trafikanalys',
+        description:
+          'Används för att hantera Google Analytics, en tjänst från Google.',
+        value: true
+      },
+      // ad_storage, ad_personalization, ad_user_data
+      marketing: {
+        label: 'Cookies för marknadsföring',
+        description: 'Används för marknadsföringsdata.',
+        value: true
+      },
+      tracking: false
+      // {
+      //   label: 'Cookies för profilering',
+      //   description: 'Används för reklam.',
+      //   value: true
+      // }
+    },
+    showEditIcon: false
+  }
 
-    function handleConsentUpdate(event) {
-        if (typeof localStorage === 'undefined') return;
+  const activeConsentOptions = JSON.stringify(
+    Object.entries(gdprProps.choices)
+      .filter(([key, value]) => !!value)
+      .map(([key, value]) => key)
+  )
 
-        consents.necessary = true;
+  function pushConsentToGoogle(consent) {
+    const fullfilledConsents = JSON.stringify(Object.keys(consent))
+    const allConsentsFullfilled = fullfilledConsents === activeConsentOptions
 
-        consents = {
-            ...consents,
-            ...{
-                [event.type]: event.detail.agreed,
-            },
-        };
-        
-        localStorage.setItem('consents', JSON.stringify(consents));
+    if (typeof window.gtag !== 'undefined' && allConsentsFullfilled) {
+      const googleConsents = {
+        ad_user_data: !!consent.marketing ? 'granted' : 'denied',
+        ad_personalization: !!consent.marketing ? 'granted' : 'denied',
+        ad_storage: !!consent.marketing ? 'granted' : 'denied',
+        analytics_storage: !!consent.analytics ? 'granted' : 'denied'
+      }
+
+      window.gtag('consent', 'update', googleConsents)
     }
+  }
+
+  function handleConsentUpdate(event) {
+    if (typeof localStorage === 'undefined') return
+
+    consents = {
+      ...consents,
+      ...{
+        [event.type]: event.detail.agreed
+      }
+    }
+
+    pushConsentToGoogle(consents)
+  }
 </script>
 
 <svelte:head>
-    <Analytics doTrack={() => hasConsent()} />
+  <svelte:element
+    this="script"
+    async
+    src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_TAG_MANAGER_ID}`} />
+
+  <svelte:element this="script">
+    {@html `
+      // Google Analytics Code
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+          dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', '${GOOGLE_TAG_MANAGER_ID}')
+    `}
+  </svelte:element>
 </svelte:head>
 
-{#if showCookieBanner()}
-    <GdprBanner {...gdprProps} on:analytics={handleConsentUpdate} />
-{/if}
+<GdprBanner
+  {...gdprProps}
+  on:analytics={handleConsentUpdate}
+  on:marketing={handleConsentUpdate} />

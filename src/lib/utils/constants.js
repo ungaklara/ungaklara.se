@@ -1,4 +1,5 @@
 export const GOOGLE_ANALYTICS_ID = 'G-9YLV4PRT5R'
+export const GOOGLE_TAG_MANAGER_ID = 'G-9YLV4PRT5R'
 export const GOOGLE_TAG = 'GT-K824C5W'
 
 export const YBUG_CONFIG = {
