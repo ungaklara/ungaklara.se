@@ -4,7 +4,7 @@
   import { dev } from '$app/environment'
   import { GOOGLE_TAG_MANAGER_ID } from './utils/constants'
 
-  let consents = { necessary: false }
+  let consents = { necessary: true }
 
   let gdprProps = {
     cookieName: 'ungaklara',
@@ -100,6 +100,13 @@
       function gtag() {
           dataLayer.push(arguments)
       }
+      gtag('consent', 'default', {
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied',
+        'wait_for_update': 500,
+      });
       gtag('js', new Date())
       gtag('config', '${GOOGLE_TAG_MANAGER_ID}')
     `}
