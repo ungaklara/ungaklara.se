@@ -43,6 +43,51 @@
       slice.primary.heading.length &&
       slice.items.length
   )
+
+  $: slices = data.page.data.body.reduce(function (acc, slice) {
+    switch (slice.slice_type) {
+      case 'link_blurb':
+      case 'file_blurb':
+      case 'any_blurb': {
+        const prev = acc.at(-1)
+        if (prev?.slice_type === '__blurbs') prev.items.push(slice)
+        else acc.push({ slice_type: '__blurbs', items: [slice] })
+        return acc
+      }
+      default:
+        return acc.concat(slice)
+    }
+  }, [])
+
+  function blurbAsItem(slice) {
+    switch (slice.slice_type) {
+      case 'link_blurb':
+        return {
+          item_id: resolve(slice.primary.link),
+          item_name: asText(slice.primary.link.data.title),
+          item_category: 'Intern länk'
+        }
+      case 'file_blurb':
+        return {
+          item_id: slice.primary.file.url,
+          item_name: asText(slice.primary.title),
+          item_category: 'Länk till dokument eller bild'
+        }
+      case 'any_blurb':
+        return {
+          item_id: resolve(slice.primary.link),
+          item_name: asText(slice.primary.title),
+          item_category: 'Extern länk'
+        }
+      default:
+        return null
+    }
+  }
+
+  const tracker = (event, items) => () => {
+    track(event, { items: Array.isArray(items) ? items : [items] })
+  }
+
   const onclick = (list, items) => () => {
     track('select_item', {
       item_list_name: list,
@@ -69,8 +114,6 @@
   let showAll = $page.url.searchParams.has('showAll')
 
   onMount(measure)
-
-  // console.log(data.production)
 
   /** @type {any[]} */
   $: actions = [
@@ -165,7 +208,7 @@
   }
 
   function resourceImage(props) {
-    if (!props.url) return null
+    if (!props?.url) return null
     return {
       srcset: asImageWidthSrcSet(props, {
         widths: [200, 400, 600, 900, 1600],
@@ -300,7 +343,8 @@
             <div class="u-uncontain">
               <Grid carousel>
                 {#each images as slice}
-                  {@const { dimensions, url, alt = '' } = slice.primary.image}
+                  <!-- {@const { dimensions, url, alt = '' } = slice.primary.image} -->
+                  {@const { dimensions, alt = '' } = slice.primary.image}
                   {@const sources = asImageWidthSrcSet(slice.primary.image, {
                     widths: [400, 599, 900, 1500]
                   })}
@@ -403,7 +447,8 @@
           ...slice
         }))}>
         {#if slice.slice_type === 'image'}
-          {@const { dimensions, url, alt = '' } = slice.primary.image}
+          <!-- {@const { dimensions, url, alt = '' } = slice.primary.image} -->
+          {@const { dimensions, alt = '' } = slice.primary.image}
           {@const sources = asImageWidthSrcSet(slice.primary.image, {
             widths: [400, 599, 900, 1500]
           })}
@@ -633,6 +678,96 @@
       </Grid>
     {/each}
   {/if}
+
+  <!-- {#each slices as slice, index} -->
+  {#each slices as slice}
+    <div class="slice slice-{slice.slice_type}">
+      {#if slice.slice_type === '__blurbs'}
+        <div
+          use:intersection={tracker(
+            'view_item_list',
+            slice.items.map(blurbAsItem)
+          )}>
+          <Grid
+            class="u-spaceMd"
+            size={{
+              md: `1of${slice.items.length >= 3 ? 3 : 2}`
+            }}>
+            {#each slice.items as item}
+              {#if item.slice_type === 'link_blurb'}
+                {@const href = resolve(item.primary.link)}
+                {#if href}
+                  <GridCell>
+                    <!-- <pre>{JSON.stringify(item.primary.link.data, null, 2)}</pre> -->
+                    <Card
+                      on:click={tracker('select_item', blurbAsItem(item))}
+                      title={asText(item.primary.link.data?.shortname) ||
+                        asText(item.primary.link.data?.title)}
+                      image={resourceImage(
+                        item.primary.link.data?.featured_image
+                      )}
+                      color={item.primary.color ||
+                        item.primary.link.data?.theme}
+                      link={{ href, text: item.primary.link.data?.cta }}>
+                      <RichText content={item.primary.link.data?.description} />
+                    </Card>
+                  </GridCell>
+                {/if}
+              {/if}
+
+              {#if item.slice_type === 'file_blurb'}
+                {#if item.primary.file.url}
+                  <GridCell>
+                    <Card
+                      on:click={tracker('select_item', blurbAsItem(item))}
+                      title={asText(item.primary.title)}
+                      image={resourceImage(item.primary.image)}
+                      color={item.primary.color}
+                      link={{ href: item.primary.file.url }}>
+                      <RichText content={item.primary.text} />
+                    </Card>
+                  </GridCell>
+                {/if}
+              {/if}
+
+              {#if item.slice_type === 'any_blurb'}
+                {@const href = resolve(item.primary.link)}
+                {#if href}
+                  <GridCell>
+                    <Card
+                      on:click={tracker('select_item', blurbAsItem(item))}
+                      title={asText(item.primary.title)}
+                      image={item.primary
+                        ? resourceImage(item.primary.image)
+                        : null}
+                      color={item.primary.color}
+                      link={{ href }}>
+                      <RichText content={item.primary.text} />
+                    </Card>
+                  </GridCell>
+                {/if}
+              {/if}
+            {/each}
+          </Grid>
+        </div>
+      {/if}
+
+      {#if slice.slice_type === 'heading'}
+        {@const heading = asText(slice.primary.heading)}
+        {#if heading}
+          {#if slice.primary.divider}
+            <div class="u-divider u-spaceLg" />
+          {/if}
+          <Html
+            size="large"
+            class={slice.primary.divider ? 'u-spaceSm' : 'u-spaceLg'}>
+            <h2>{heading}</h2>
+            <RichText content={slice.primary.text} />
+          </Html>
+        {/if}
+      {/if}
+    </div>
+  {/each}
 </div>
 
 <style>

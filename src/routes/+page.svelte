@@ -24,7 +24,7 @@
   import Grid from '$lib/Grid.svelte'
   import Card from '$lib/Card.svelte'
   import { asImageWidthSrcSet } from '@prismicio/helpers'
-  import { json } from '@sveltejs/kit'
+  // import { json } from '@sveltejs/kit'
 
   export let data
   export let form
